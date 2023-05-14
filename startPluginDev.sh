@@ -9,7 +9,7 @@ set_author_name() {
     local invalid="Invalid input. Please enter 'y' or 'n'."
 
     while [ $q1validation == false ]; do
-    #while true; do
+
         echo "Are you the author?(y/n)"
         read oauthor
 
@@ -22,13 +22,11 @@ set_author_name() {
                 read usegit
 
                 if [ "$usegit" == "y" ]; then 
-                    # fetch git user.name
+
                     gituser=$(git config user.name)
 
-                    # remove dot
                     username=${gituser/./ }
 
-                    # uppercase
                     username=$(echo "$username" | sed -e 's/\b\(.\)/\u\1/g')
 
                     echo "The git user name is: $gituser, setting author name to $username"
