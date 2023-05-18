@@ -112,8 +112,37 @@ create_dirs_and_files() {
     css_file="${css_dir}/${dirname}_style.css"
 
     touch $php_file $readme_file $js_file $css_file
+    echo '.'
 }
 
+write_file_content() {
+
+    write_file_content_readme
+
+
+
+}
+
+write_file_content_readme() {
+    local short_description
+    local usage
+    local functionality
+
+    # functionality for adding short description
+    echo "Add short description?"
+    read short_description
+
+    # functionality for adding Usage
+    echo "Add usage information?"
+    read usage
+
+    # functionality for adding Functionality
+    echo "Add functionality information?"
+    read functionality
+
+    printf "# Plugin Name\n\n${short_description}\n\n## Usage\n\n${usage}\n\n## Functionality\n\n${functionality}\n\n## Changelog\n\n### Version 1.0.0\n- Initial Release\n\n## Author\n\n${authorname}" >> $readme_file
+
+}
 
 
 
@@ -128,7 +157,6 @@ set_plugin_name
 set_author_name
 validate_inputs
 create_dirs_and_files
-
-echo $target_dir
+write_file_content
 
 
