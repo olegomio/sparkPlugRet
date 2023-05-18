@@ -89,10 +89,17 @@ set_author_name() {
 
 validate_inputs() {
 
-    #echo "Plugin Name: $pluginname // Author Name: $authorname"
+    if [[ $pluginname == *retarus* || $pluginname == *Retarus* ]]; then
 
-    # concatenate plugin name for dir name
-    dirname=$(echo "retarus_$pluginname" | sed -e 's/ /_/g' -e 's/\(.\)/\L\1/g')
+        # concatenate plugin name for dir name
+        dirname=$(echo "$pluginname" | sed -e 's/ /_/g' -e 's/\(.\)/\L\1/g')
+
+    else
+
+        # concatenate plugin name for dir name
+        dirname=$(echo "retarus_$pluginname" | sed -e 's/ /_/g' -e 's/\(.\)/\L\1/g')
+    
+    fi
 
     echo "Setting directory name to $dirname"
 
@@ -150,7 +157,6 @@ remove_directory_and_files() {
 }
 
 write_file_content() {
-
     write_file_content_readme "$authorname"
     write_file_content_php "$authorname"
     write_file_content_js "$authorname"
@@ -200,6 +206,10 @@ write_file_content_readme() {
 
     cat <<EOF >> "$readme_file"
 # Plugin Name
+
+${pluginname}
+
+# Short Description
 
 ${short_description}
 
