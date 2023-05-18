@@ -106,8 +106,14 @@ create_dirs_and_files() {
 
     mkdir -p "$target_dir" "$js_dir" "$css_dir"
 
-    touch "${target_dir}/${dirname}.php" "${target_dir}/readme.txt" "${js_dir}/${dirname}_script.js" "${css_dir}/${dirname}_style.css"
+    php_file="${target_dir}/${dirname}.php" 
+    readme_file="${target_dir}/readme.txt"
+    js_file="${js_dir}/${dirname}_script.js"
+    css_file="${css_dir}/${dirname}_style.css"
+
+    touch $php_file $readme_file $js_file $css_file
 }
+
 
 
 
