@@ -23,9 +23,9 @@ set_author_name() {
 
                 if [ "$usegit" == "y" ]; then 
 
-                    gituser=$(git config user.name)
+                    local gituser=$(git config user.name)
 
-                    username=${gituser/./ }
+                    local username=${gituser/./ }
 
                     username=$(echo "$username" | sed -e 's/\b\(.\)/\u\1/g')
 
