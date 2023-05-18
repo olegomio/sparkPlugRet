@@ -46,6 +46,7 @@ set_author_name() {
                     username=$(echo "$username" | sed -e 's/\b\(.\)/\u\1/g')
 
                     echo "The git user name is: $gituser, setting author name to $username"
+                    authorname=$username
                     q2validation=true
 
                 elif [[ "$usegit" == "n" ]]; then
@@ -54,6 +55,7 @@ set_author_name() {
                     read username
 
                     echo "setting author name to $username"
+                    authorname=$username
                     q2validation=true
                 
                 elif [[ "$usegit"  == '-q' ]]; then
@@ -112,23 +114,32 @@ create_dirs_and_files() {
     css_file="${css_dir}/${dirname}_style.css"
 
     touch $php_file $readme_file $js_file $css_file
-    echo '.'
+    print_dots 5 
+}
+
+print_dots() {
+  local count=$1
+  for ((i = 0; i < count; i++)); do
+    echo -n "."
+  done
 }
 
 write_file_content() {
 
-    write_file_content_readme
-
-
-
+    write_file_content_readme "$authorname"
+    write_file_content_php "$authorname"
+    #write_file_content_php
+    #write_file_content_php
+    print_dots 4
 }
 
+declare -g authorname=""
+
 write_file_content_readme() {
-    local short_description
-    local usage
-    local functionality
+    local authorname=$1
 
     # functionality for adding short description
+    echo ''
     echo "Add short description?"
     read short_description
 
@@ -140,11 +151,105 @@ write_file_content_readme() {
     echo "Add functionality information?"
     read functionality
 
-    printf "# Plugin Name\n\n${short_description}\n\n## Usage\n\n${usage}\n\n## Functionality\n\n${functionality}\n\n## Changelog\n\n### Version 1.0.0\n- Initial Release\n\n## Author\n\n${authorname}" >> $readme_file
+    cat <<EOF >> "$readme_file"
+# Plugin Name
+
+${short_description}
+
+## Usage
+
+${usage}
+
+## Functionality
+
+${functionality}
+
+## Changelog
+
+### Version 1.0.0
+- Initial Release
+
+## Author
+
+${authorname}
+EOF
+
+print_dots 5
+
 
 }
 
+write_file_content_php() {
+    local authorname=$1
+    current_date=$(date +%m/%y)
+    
+    cat <<EOT > $php_file
+<?php
 
+/**
+ * Plugin Name: ${pluginname}
+ * Description: ${short_description}
+ * Version: 1.0.0
+ * Author: ${authorname}
+ * ${current_date}
+ * @package ${pluginname}
+ * 
+ */
+
+// add backend "View Details" Link for more Information about the Plugin - shows readme.txt
+
+add_filter(
+    'plugin_row_meta',
+    function( \$plugin_meta, \$plugin_file, \$plugin_data ) {
+        if ( __FILE__ === path_join( WP_PLUGIN_DIR, \$plugin_file ) ) {
+
+            \$url = plugins_url( 'readme.txt', __FILE__ );
+
+            \$plugin_meta[] = sprintf(
+                '<a href="%s" class="thickbox open-plugin-details-modal" aria-label="%s" data-title="%s">%s</a>',
+                add_query_arg( 'TB_iframe', 'true', \$url ),
+                esc_attr( sprintf( __( 'More information about %s' ), \$plugin_data['Name'] ) ),
+                esc_attr( \$plugin_data['Name'] ),
+                __( 'View details' )
+            );
+        }
+        return \$plugin_meta;
+    },
+    10,
+    3
+);
+
+
+// Enqueue JavaScript File
+
+function plugin_script() {
+    wp_enqueue_script( 'plugin_script', plugin_dir_url( __FILE__ ) . 'js/${dirname}_script.js', array( 'jquery' ), '1.0.0', true );
+}
+add_action( 'wp_enqueue_scripts', 'plugin_script' );
+
+
+// Enqueue CSS File
+
+function plugin_style() {
+    wp_enqueue_style( 'plugin_style', plugin_dir_url( __FILE__ ) . 'css/${dirname}_style.css' );
+}
+add_action( 'wp_enqueue_scripts', 'plugin_style' );
+
+
+
+// Core Function
+
+add_action( 'wp', 'plugin_function');
+function plugin_function() {
+
+    // your code
+
+}
+EOT
+
+print_dots 5
+
+}
 
 # console outputs
 
@@ -157,6 +262,6 @@ set_plugin_name
 set_author_name
 validate_inputs
 create_dirs_and_files
-write_file_content
+write_file_content "$authorname"
 
 
