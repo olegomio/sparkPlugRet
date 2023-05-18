@@ -96,18 +96,19 @@ validate_inputs() {
 
 }
 
-#create_dirs_and_files() {
-
+create_dirs_and_files() {
+    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    local parent_dir="$(dirname "$script_dir")"
     
+    target_dir="$parent_dir/$dirname"
+    js_dir="$target_dir/js"
+    css_dir="$target_dir/css"
 
-   # echo $dirname 
+    mkdir -p "$target_dir" "$js_dir" "$css_dir"
 
-#}
+    touch "${target_dir}/${dirname}.php" "${target_dir}/readme.txt" "${js_dir}/${dirname}_script.js" "${css_dir}/${dirname}_style.css"
+}
 
-
-#create_file_structure( $pluginname, $username ) {
-
-#}
 
 
 # console outputs
@@ -122,8 +123,6 @@ set_author_name
 validate_inputs
 create_dirs_and_files
 
+echo $target_dir
 
-# create new base file
-
-# touch
 
