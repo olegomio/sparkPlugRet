@@ -169,40 +169,70 @@ declare -g authorname=""
 write_file_content_readme() {
     local authorname=$1
     local should_remove_directory=false
+    local q1validation=false
+    
+    echo '' 
+    echo 'Do you want to add additional information? (Short Description, Usage, Functionality) (y/n)?'
 
-    # functionality for adding short description
-    echo ''
-    echo "Add short description?"
-    read short_description
+    while [[ $q1validation == false ]]; do
+        read add_extra_info_prompt
+        if [[ $add_extra_info_prompt == 'y' ]]; then
 
-    if [[ $short_description == "-q" ]]; then
-        should_remove_directory=true
-    fi
+                # functionality for adding short description
+                echo "Add short description?"
+                read short_description
 
-    if [[ $should_remove_directory == false ]]; then
-        # functionality for adding Usage
-        echo "Add usage information?"
-        read usage
+                if [[ $short_description == "-q" ]]; then
+                    should_remove_directory=true
+                fi
 
-        if [[ $usage == "-q" ]]; then
+                if [[ $should_remove_directory == false ]]; then
+                    # functionality for adding Usage
+                    echo "Add usage information?"
+                    read usage
+
+                    if [[ $usage == "-q" ]]; then
+                        should_remove_directory=true
+                    fi
+                fi
+
+                if [[ $should_remove_directory == false ]]; then
+                    # functionality for adding Functionality
+                    echo "Add functionality information?"
+                    read functionality
+
+                    if [[ $functionality == "-q" ]]; then
+                        should_remove_directory=true
+                    fi
+                fi
+
+                if [[ $should_remove_directory == true ]]; then
+                    remove_directory_and_files
+                    exit 1
+                fi
+                
+
+                if [[ $usage == "-q" ]]; then
+                    should_remove_directory=true
+                fi
+            
+            q1validation=true
+        elif [[ $add_extra_info_prompt  == 'n' ]]; then
+            
+            q1validation=true
+        elif [[ $add_extra_info_prompt == "-q" ]]; then
             should_remove_directory=true
+        else
+            echo $invalid_yes_no
+            continue
         fi
-    fi
 
-    if [[ $should_remove_directory == false ]]; then
-        # functionality for adding Functionality
-        echo "Add functionality information?"
-        read functionality
-
-        if [[ $functionality == "-q" ]]; then
-            should_remove_directory=true
+        if [[ $should_remove_directory == true ]]; then
+            remove_directory_and_files
+            exit 1
         fi
-    fi
 
-    if [[ $should_remove_directory == true ]]; then
-        remove_directory_and_files
-        exit 1
-    fi
+    done
 
     cat <<EOF >> "$readme_file"
 # Plugin Name
@@ -368,5 +398,9 @@ set_author_name
 validate_inputs
 create_dirs_and_files
 write_file_content "$authorname"
+
+#echo $target_dir
+
+#cd $target_dir
 
 
