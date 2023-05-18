@@ -124,12 +124,37 @@ print_dots() {
   done
 }
 
+remove_directory_and_files() {
+
+    local q1validation=false
+    local q2validation=false
+
+    echo 'Remove plugin directory?(y/n)'
+
+    while [[ $q1validation == false ]]; do
+        read remove_directory
+        if [[ $remove_directory == 'y' ]]; then
+            rm -r $target_dir
+            exit 1
+            q1validation=true
+        elif [[ $remove_directory == 'n' ]]; then
+            exit 1
+            q1validation=true
+        else
+            echo $invalid_yes_no
+            continue
+        fi
+
+    done
+
+}
+
 write_file_content() {
 
     write_file_content_readme "$authorname"
     write_file_content_php "$authorname"
-    #write_file_content_php
-    #write_file_content_php
+    write_file_content_js "$authorname"
+    write_file_content_css "$authorname"
     print_dots 4
 }
 
@@ -137,19 +162,41 @@ declare -g authorname=""
 
 write_file_content_readme() {
     local authorname=$1
+    local should_remove_directory=false
 
     # functionality for adding short description
     echo ''
     echo "Add short description?"
     read short_description
 
-    # functionality for adding Usage
-    echo "Add usage information?"
-    read usage
+    if [[ $short_description == "-q" ]]; then
+        should_remove_directory=true
+    fi
 
-    # functionality for adding Functionality
-    echo "Add functionality information?"
-    read functionality
+    if [[ $should_remove_directory == false ]]; then
+        # functionality for adding Usage
+        echo "Add usage information?"
+        read usage
+
+        if [[ $usage == "-q" ]]; then
+            should_remove_directory=true
+        fi
+    fi
+
+    if [[ $should_remove_directory == false ]]; then
+        # functionality for adding Functionality
+        echo "Add functionality information?"
+        read functionality
+
+        if [[ $functionality == "-q" ]]; then
+            should_remove_directory=true
+        fi
+    fi
+
+    if [[ $should_remove_directory == true ]]; then
+        remove_directory_and_files
+        exit 1
+    fi
 
     cat <<EOF >> "$readme_file"
 # Plugin Name
@@ -245,6 +292,54 @@ function plugin_function() {
     // your code
 
 }
+EOT
+
+print_dots 5
+
+}
+
+write_file_content_js() {
+
+    local authorname=$1
+    current_date=$(date +%m/%y)
+    
+    cat <<EOT > $js_file
+/**
+ * Plugin Name: ${pluginname}
+ * Description: ${short_description}
+ * Version: 1.0.0
+ * Author: ${authorname}
+ * ${current_date}
+ * @package ${pluginname}
+ * 
+ */
+
+
+
+EOT
+
+print_dots 5
+
+}
+
+write_file_content_css() {
+
+    local authorname=$1
+    current_date=$(date +%m/%y)
+    
+    cat <<EOT > $css_file
+/**
+ * Plugin Name: ${pluginname}
+ * Description: ${short_description}
+ * Version: 1.0.0
+ * Author: ${authorname}
+ * ${current_date}
+ * @package ${pluginname}
+ * 
+ */
+
+
+
 EOT
 
 print_dots 5
