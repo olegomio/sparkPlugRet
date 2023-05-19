@@ -1,4 +1,5 @@
 SparkPlug Readme
+
 This script automates the creation of a WordPress plugin directory and files. It simplifies the process of setting up a new plugin by generating the required structure and files based on your inputs.
 
 Usage
