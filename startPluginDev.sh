@@ -2,7 +2,7 @@
 # SparkPlug
 # Startup script for wordpress plugin development. Creates directories and files via prompts. See README.md for usage 
 # Author: Alexander Geiger
-
+ 
 # functions
 
 set_plugin_name() {
