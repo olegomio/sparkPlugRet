@@ -4,7 +4,7 @@
 # Author: Alexander Geiger
 
 # functions
-
+ 
 set_plugin_name() {
 
     echo "Enter name of plugin:"
