@@ -16,4 +16,4 @@ For forking use: https://github.com/olegomio/sparkPlug
 Keep in mind, that the base plugin doesn't validate whether "retarus" or "Retarus" is prompted for the plugin name. This is important so that the directory name of the plugin doesn't have two "retarus" instances. Just copy the validation from the inital release commit.
 
 Author
-Alexander Geiger
+Alexander Geiger 
